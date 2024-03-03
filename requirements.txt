@@ -1,8 +1,7 @@
 asgiref==3.7.2
 cffi==1.16.0
-cryptography==42.0.5
 Django==5.0.2
-pillow==10.2.0
+django-appconf==1.0.6
 pycparser==2.21
 sqlparse==0.4.4
 tzdata==2024.1
