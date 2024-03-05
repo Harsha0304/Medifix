@@ -10,6 +10,11 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <title>Medifix Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <style>
+        #map { height: 400px; }
+    </style>
 </head>
 
 <body>
@@ -51,7 +56,7 @@
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
@@ -61,6 +66,28 @@
             </div>
         </div>
     </nav>
+    <div class="container">
+        <div id="map"></div>
+
+
+    </div>
+
+    <script>
+        var map = L.map('map').setView([0, 0], 2); // Set the center of the map and the zoom level
+    
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    
+        // Sample data containing latitude, longitude, and description
+        var campData = {{ camp_data|safe }};
+    
+        campData.forEach(function(camp) {
+            var marker = L.marker([camp.lat, camp.lng]).addTo(map);
+            marker.bindPopup(camp.description);
+        });
+    </script>
+    
 </body>
 
 </html>
