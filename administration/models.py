@@ -10,6 +10,11 @@ workplace = (
     ("Hybird","Hybird"),
 )
 
+type_of_camp = (
+    ("Paid","Paid"),
+    ("Free","Free"),
+)
+
 employment_type = (
     ("Full-Time","Full-Time"),
     ("Part-TIme","Part-TIme"),
@@ -147,3 +152,32 @@ class Project(models.Model):
         elif not self.working_on_the_project and not self.end_date:
             raise ValidationError("End date is mandatory when not working on the project.")
 
+class camp_details(models.Model):
+    camp_name = models.CharField(max_length=200,null=True)
+    location = models.CharField(max_length=200, null=True)
+    lattitude = models.FloatField()
+    longitude = models.FloatField()
+    start_date_time = models.DateTimeField()
+    end_date_time = models.DateTimeField()
+    contact_website = models.URLField(max_length=200, null=True, blank=True)
+    hospital_name = models.CharField(max_length=150,null=True, blank=True)
+    club_name = models.CharField(max_length=150,null=True, blank=True)
+    other = models.CharField(max_length = 150, null=True, blank=True)
+    description = models.TextField(max_length = 1000, null=True)
+    type_of_camp = models.CharField(max_length=30, null=True, choices=type_of_camp)
+    cost = models.IntegerField()
+    other_services = models.TextField(max_length=6000, null=True)
+    total_camp_registrations = models.IntegerField()
+
+    def __str__(self):
+        return self.camp_name
+    
+    def clean(self):
+        super().clean()
+        if not (self.hospital_name or self.club_name or self.other):
+            raise ValidationError("At least one of the fields Hospital Name or Club Name or Other must be filled.")
+        
+        if self.type_of_camp == "Paid" and not self.cost:
+            raise ValidationError("Cost field is mandatory for paid camps.")
+        elif self.type_of_camp == "Free" and self.cost is not None:
+            raise ValidationError("Cost field should not be filled for free camps.")
