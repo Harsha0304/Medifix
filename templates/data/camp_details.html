@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Camp Details{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Camp Name</th>
+            <th scope="col">Location</th>
+            <th scope="col">Hospital Name</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cd in camp_data %}
+        <tr>
+            <th scope="row">{{cd.camp_name}}</th>
+            <td>{{cd.location}}</td>
+            <td>{{cd.hospital_name}}</td>
+            <td>{{cd.description}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

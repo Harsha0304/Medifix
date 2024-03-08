@@ -165,7 +165,7 @@ class camp_details(models.Model):
     other = models.CharField(max_length = 150, null=True, blank=True)
     description = models.TextField(max_length = 1000, null=True)
     type_of_camp = models.CharField(max_length=30, null=True, choices=type_of_camp)
-    cost = models.IntegerField()
+    cost = models.IntegerField(null=True, blank=True, default='0')
     other_services = models.TextField(max_length=6000, null=True)
     total_camp_registrations = models.IntegerField()
 
