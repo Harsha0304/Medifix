@@ -1,80 +1,35 @@
-{%load static %}
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{%static 'css/style.css'%}">
-        <title>Sign Up</title>
-    </head>
-    <body>
-        <div class="split-screen">
-            <div class="left">
-                <section class="copy">
-                    <h1>My Project</h1>
-                    <p style="color: black;">Medifix</p>
-                </section>
-            </div>
-            <div class="right">
-                
-                <form action="{% url 'register' %}" method="POST">
-                    {% csrf_token %}
-                    
-                    <section class="copy">
-                        <h2>Sign Up</h2>
-                        <div class="login-container">
-                            <p>
-                                Already have an account?
-                                <a href="{% url 'login' %}">
-                                    <strong>Login</strong>
-                                </a>
-                            </p>
-                            {% if register_form.errors %}
-                                {% for field in register_form %}
-                                    {% if field.errors %}
-                                        <li type="1" style="color: red;">{{ field.label }}: {{ field.errors|striptags }}</li>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    </section>
-                    <div class="input-container username">
-                        <label for="username">Username</label>
-                        {{register_form.username}}
-                    </div>
-                    <div class="input-container email">
-                        <label for="email">Email Address</label>
-                        {{register_form.email}}
-                    </div>
-                    <div class="input-container password">
-                        <label for="password1">Password</label>
-                        {{register_form.password1}}
-                    </div>
-                    <div class="input-container password">
-                        <label for="password2">Confirm Password</label>
-                        {{register_form.password2}}
-                    </div>
-                    <button class="signup-btn" type="submit">
-                        Sign Up
-                    </button>
-                </form>
-            </div>
-        </div>
-    </body>
-</html>
-
 {% extends 'registration/registerbase.html' %}
 {% block content %}
 <div class="mb-5">
     <h3 class="h4 font-weight-bold text-theme">Register</h3>
 </div>
-<p class="text-muted mt-2 mb-5">Welcome User</p>
-<form action="#" method="POST">
+{% if register_form.errors %}
+{% for field in register_form %}
+{% if field.errors %}
+<li type="1" style="color: red;">{{ field.label }}: {{ field.errors|striptags }}</li>
+{% endif %}
+{% endfor %}
+{% endif %}
+<p class="text-muted mt-2 mb-3">Register with us for your incredible journey.</p>
+<form action="{% url 'register' %}" method="POST">
     {% csrf_token %}
-    <div class="form-group">
-        <h2>UNDER DEVELOPMENT</h2>
+    <div class="form-group mb-2">
+        <label for="InputUsername">Username</label>
+        {{register_form.username}}
     </div>
-    <button type="submit" class="btn btn-theme">Submit</button>
-    <a href="{% url 'login' %}" class="forgot-link float-right text-primary">Go Back</a>
-</form>           
+    <div class="form-group mb-2">
+        <label for="Inputemail">Email Address</label>
+        {{register_form.username}}
+    </div>
+    <div class="form-group mb-2">
+        <label for="InputPassword1">Password</label>
+        {{register_form.password1}}
+    </div>
+    <div class="form-group mb-2">
+        <label for="InputPassword2">Re-Enter Password</label>
+        {{register_form.password2}}
+    </div>
+    <button type="submit" class="btn btn-theme">Register</button>
+    <a href="{% url 'password_reset' %}" class="forgot-link float-right text-primary">Forgot password?</a>
+</form>
 {% endblock %}

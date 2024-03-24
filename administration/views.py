@@ -20,4 +20,4 @@ def signup_view(request):
             return redirect('login')
     else:
         form = SignUpForm()
-    return render(request, 'registration/registration.html', {'form': form})
+    return render(request, 'registration/registration.html', {'register_form': form})
