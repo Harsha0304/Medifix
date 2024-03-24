@@ -62,3 +62,19 @@
         </div>
     </body>
 </html>
+
+{% extends 'registration/registerbase.html' %}
+{% block content %}
+<div class="mb-5">
+    <h3 class="h4 font-weight-bold text-theme">Register</h3>
+</div>
+<p class="text-muted mt-2 mb-5">Welcome User</p>
+<form action="#" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <h2>UNDER DEVELOPMENT</h2>
+    </div>
+    <button type="submit" class="btn btn-theme">Submit</button>
+    <a href="{% url 'login' %}" class="forgot-link float-right text-primary">Go Back</a>
+</form>           
+{% endblock %}
