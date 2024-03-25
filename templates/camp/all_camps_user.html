@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pagetitle %}Medifix - Home{% endblock %}
+{% block content %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Camp Name</th>
+            <th>Location</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>View Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for camp in user_camps %}
+        <tr>
+            <td>{{ camp.camp_name }}</td>
+            <td>{{ camp.location }}</td>
+            <td>{{ camp.start_date_time }}</td>
+            <td>{{ camp.end_date_time }}</td>
+            <td>
+                <button type="button" class="btn btn-primary">View</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

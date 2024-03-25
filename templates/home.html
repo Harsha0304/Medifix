@@ -2,5 +2,20 @@
 {% load static %}
 {% block pagetitle %}Medifix - Home{% endblock %}
 {% block content %}
+<div id="map"></div>
+<script>
+    var map = L.map('map').setView([0, 0], 2); // Set the center of the map and the zoom level
 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Sample data containing latitude, longitude, and description
+    var campData = {{ camp_data|safe }};
+
+    campData.forEach(function(camp) {
+        var marker = L.marker([camp.lat, camp.lng]).addTo(map);
+        marker.bindPopup(camp.description);
+    });
+</script>
 {% endblock %}

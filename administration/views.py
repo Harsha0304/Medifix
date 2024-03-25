@@ -4,14 +4,18 @@ from django.contrib import messages
 from .forms import SignUpForm, ProfileForm
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import profile
+from .models import profile, camp_details
+import json
 # Create your views here.
 def index(request):
+    
     return render(request,'index.html')
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    camps = camp_details.objects.all()
+    camp_data = [{'lat': camp.lattitude, 'lng': camp.longitude, 'description': camp.description} for camp in camps]
+    return render(request, 'home.html', {'camp_data': json.dumps(camp_data)})
 
 def signup_view(request):
     if request.method == 'POST':
@@ -57,4 +61,9 @@ def register_camp_org(request):
         form = ProfileForm(instance=user_profile)
     
     submitted_application = user_profile.submitted_application
-    return render(request, 'camp_register.html', {'form': form, 'submitted_application': submitted_application})
+    camp_register = user_profile.camp_register
+    return render(request, 'camp_register.html', {'form': form, 'submitted_application': submitted_application, 'camp_register': camp_register})
+
+def user_camps(request):
+    user_camps = camp_details.objects.filter(createdby=request.user)
+    return render(request, 'camp/all_camps_user.html', {'user_camps': user_camps})
