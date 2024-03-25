@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia\Kolkata'
 
 USE_I18N = True
 
@@ -164,4 +164,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'officialharsha31@gmail.com'
 EMAIL_HOST_PASSWORD = 'jdfpkipmjaqjtoeo'
+SUPER_ADMIN_EMAIL = 'officialharsha31@gmail.com'
 EMAIL_USE_TLS = True

@@ -16,6 +16,9 @@ class profile(models.Model):
     user_name = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.IntegerField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
+    camp_register = models.BooleanField(default=False)
+    submitted_application = models.BooleanField(default=False)
+    about = models.TextField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
         return self.user_name.username
