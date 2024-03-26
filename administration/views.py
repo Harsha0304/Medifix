@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from .forms import SignUpForm, ProfileForm
 from django.core.mail import send_mail
@@ -16,6 +17,51 @@ def home(request):
     camps = camp_details.objects.all()
     camp_data = [{'lat': camp.lattitude, 'lng': camp.longitude, 'description': camp.description} for camp in camps]
     return render(request, 'home.html', {'camp_data': json.dumps(camp_data)})
+
+@login_required
+def camp_organizer_request(request):
+    submitted_profiles = profile.objects.filter(submitted_application=True)
+    return render(request, 'camp/camp_organizer_request.html', {'submitted_profiles': submitted_profiles})
+
+@login_required
+def camp_organizer_profile_detail(request,username):
+    user_profile = get_object_or_404(profile, user_name__username=username)
+    return render(request, 'camp/organizer_user_profile.html', {'user_profile': user_profile})
+
+@login_required
+def approve_application(request, username):
+    # Retrieve the user's profile
+    user_profile = get_object_or_404(profile, user_name__username=username)
+
+    # Set camp_register to True
+    user_profile.camp_register = True
+    user_profile.save()
+
+    # Send acknowledgment email to the user
+    subject = 'Camp Registration Approval'
+    message = 'Dear {},\n\nYour camp registration has been approved. Thank you for your registration.\n\nBest regards,\nThe Camp Registration Team'.format(user_profile.user_name.username)
+    send_mail(subject, message, settings.EMAIL_HOST_USER, [user_profile.user_name.email])
+
+    # Redirect to a success page or another view
+    return redirect('camp_organizer_request')
+
+@login_required
+def deny_application(request, username):
+    # Retrieve the user's profile
+    user_profile = get_object_or_404(profile, user_name__username=username)
+
+    # Deny the application
+    user_profile.camp_register = False
+    user_profile.save()
+
+    # Send notification email to the user
+    subject = 'Camp Registration Denial'
+    message = 'Dear {},\n\nWe regret to inform you that your camp registration has been denied.\n\nBest regards,\nThe Camp Registration Team'.format(user_profile.user_name.username)
+    send_mail(subject, message, settings.EMAIL_HOST_USER, [user_profile.user_name.email])
+
+    # Redirect to a success page or another view
+    return redirect('camp_organizer_request')
+
 
 def signup_view(request):
     if request.method == 'POST':

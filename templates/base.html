@@ -41,6 +41,9 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'camp_register' %}">Register as Camp Organizer</a></li>
+                            {% if user.is_superuser %}
+                            <li><a class="dropdown-item" href="{% url 'camp_organizer_request' %}">Pending Camp Organizer registration Request</a></li>
+                            {% endif %}
                             {% if request.user.profile.camp_register == True %}
                             <li><a class="dropdown-item" href="{% url 'my_camps' %}">All Camps</a></li>
                             <li>
