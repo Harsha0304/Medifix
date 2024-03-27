@@ -2,6 +2,11 @@
 {% load static %}
 {% block pagetitle %}Medifix - Home{% endblock %}
 {% block content %}
+<div class="card">
+    <div class="card-body">
+        Your Camps <span><a href="{% url 'create_camp' %}">Add Camp</a></span>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -20,7 +25,7 @@
             <td>{{ camp.start_date_time }}</td>
             <td>{{ camp.end_date_time }}</td>
             <td>
-                <button type="button" class="btn btn-primary">View</button>
+                <a href="{% url 'camp_details' camp.id %}" class="btn btn-primary">view</a>
             </td>
         </tr>
         {% endfor %}

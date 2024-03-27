@@ -47,6 +47,7 @@ class camp_details(models.Model):
     type_of_camp = models.CharField(max_length=30, null=True, choices=type_of_camp)
     cost = models.IntegerField(null=True, blank=True, default='0')
     total_camp_registrations = models.IntegerField()
+    camp_register_active = models.BooleanField(default=False)
     createdby = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
 

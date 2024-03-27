@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-from .forms import SignUpForm, ProfileForm
+from .forms import SignUpForm, ProfileForm, CampDetailsForm
 from django.core.mail import send_mail
 from django.conf import settings
 from .models import profile, camp_details
 import json
+from django.views.generic import DetailView
+
 # Create your views here.
 def index(request):
     
@@ -83,6 +85,7 @@ def signup_view(request):
         form = SignUpForm()
     return render(request, 'registration/registration.html', {'register_form': form})
 
+@login_required
 def register_camp_org(request):
     user_profile = profile.objects.get(user_name=request.user)
     if request.method == 'POST':
@@ -110,6 +113,31 @@ def register_camp_org(request):
     camp_register = user_profile.camp_register
     return render(request, 'camp_register.html', {'form': form, 'submitted_application': submitted_application, 'camp_register': camp_register})
 
+@login_required
 def user_camps(request):
     user_camps = camp_details.objects.filter(createdby=request.user)
     return render(request, 'camp/all_camps_user.html', {'user_camps': user_camps})
+
+@login_required
+def camp_details_view(request, pk):
+    camp = get_object_or_404(camp_details, pk=pk)
+    camp_data = [{'lat': camp.lattitude, 'lng': camp.longitude, 'description': camp.description}]
+    return render(request, 'camp/camp_detail.html', {'camp': camp, 'camp_data': json.dumps(camp_data)})
+
+class CampDetailsDetailView(DetailView):
+    model = camp_details
+    template_name = 'camp/camp_detail.html'
+
+
+@login_required
+def create_camp_view(request):
+    if request.method == 'POST':
+        form = CampDetailsForm(request.POST)
+        if form.is_valid():
+            camp = form.save(commit=False)
+            camp.createdby = request.user
+            camp.save()
+            return redirect('camp_details', pk=camp.pk)  # Redirect to camp details page
+    else:
+        form = CampDetailsForm()
+    return render(request, 'camp/register_camp.html', {'form': form})

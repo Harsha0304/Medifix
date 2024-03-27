@@ -14,4 +14,6 @@ urlpatterns = [
     path('organizer/<str:username>/', views.camp_organizer_profile_detail, name='organizer_user_profile_detail'),
     path('approve/<str:username>/', views.approve_application, name='approve_application'),
     path('deny/<str:username>/', views.deny_application, name='deny_application'),
+    path('<int:pk>/', views.camp_details_view, name='camp_details'),
+    path('create/', views.create_camp_view, name='create_camp'),
 ]

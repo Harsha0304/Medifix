@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import profile
+from .models import profile, camp_details
 
 
 class SignUpForm(UserCreationForm):
@@ -34,3 +34,8 @@ class ProfileForm(forms.ModelForm):
             'submitted_application': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'about': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'aria-describedby': 'abouthelp'}),
         }
+
+class CampDetailsForm(forms.ModelForm):
+    class Meta:
+        model = camp_details
+        fields = '__all__'
