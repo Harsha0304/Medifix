@@ -2,16 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-from .forms import SignUpForm, ProfileForm, CampDetailsForm
+from .forms import SignUpForm, ProfileForm, CampDetailsForm, CampServiceDetailsForm
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import profile, camp_details
+from .models import profile, camp_details, camp_services
 import json
 from django.views.generic import DetailView
 
 # Create your views here.
 def index(request):
-    
     return render(request,'index.html')
 
 @login_required
@@ -22,7 +21,7 @@ def home(request):
 
 @login_required
 def camp_organizer_request(request):
-    submitted_profiles = profile.objects.filter(submitted_application=True)
+    submitted_profiles = profile.objects.filter(submitted_application=True, camp_register=False)
     return render(request, 'camp/camp_organizer_request.html', {'submitted_profiles': submitted_profiles})
 
 @login_required
@@ -121,7 +120,13 @@ def user_camps(request):
 @login_required
 def camp_details_view(request, pk):
     camp = get_object_or_404(camp_details, pk=pk)
-    camp_data = [{'lat': camp.lattitude, 'lng': camp.longitude, 'description': camp.description}]
+    related_services = camp.camp_services_set.all()
+    camp_data = {
+        'lat': camp.lattitude,
+        'lng': camp.longitude,
+        'description': camp.description,
+        'services': list(related_services.values_list('service_name', flat=True))  # Extract service names
+    }
     return render(request, 'camp/camp_detail.html', {'camp': camp, 'camp_data': json.dumps(camp_data)})
 
 class CampDetailsDetailView(DetailView):
@@ -141,3 +146,16 @@ def create_camp_view(request):
     else:
         form = CampDetailsForm()
     return render(request, 'camp/register_camp.html', {'form': form})
+
+
+def add_camp_service(request):
+    if request.method == 'POST':
+        form = CampServiceDetailsForm(request.POST)
+        if form.is_valid():
+            camp = form.save(commit=False)
+            camp.save()
+            return redirect('camp_details', pk=camp.pk)  # Redirect to camp details page
+    else:
+        form = CampServiceDetailsForm()
+    return render(request, 'camp_service/add_camp_service.html', {'form': form})
+

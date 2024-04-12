@@ -7,6 +7,30 @@
 <p>Start Date Time: {{ camp.start_date_time }}</p>
 <p>End Date Time: {{ camp.end_date_time }}</p>
 
+<h3>Related Services:</h3>
+<ul>
+    {% for service_name in camp_data.services %}
+    <li>{{ service_name }}</li>
+    {% empty %}
+    <li>No services offered</li>
+    {% endfor %}
+</ul>
+
+<button onclick="showAddServiceForm()">Add Camp Service</button>
+
+<!-- Add Camp Service Form (hidden by default) -->
+<div id="addServiceForm" style="display: none;">
+    <h3>Add Camp Service</h3>
+    <form id="serviceForm" method="POST" action="{% url 'add_camp_service' %}">
+        {% csrf_token %}
+        <label for="camp_name" hidden>Camp Name:</label>
+        <input type="text" id="camp_name" name="camp_name" value="{{ camp.camp_name }}" required hidden><br><br>
+        <label for="service_name">Service Name:</label>
+        <input type="text" id="service_name" name="service_name" required><br><br>
+        <input type="submit" value="Add">
+    </form>
+</div>
+
 <div id="map"></div>
 <script>
     var map = L.map('map').setView([0, 0], 2); // Set the center of the map and the zoom level
@@ -16,11 +40,15 @@
     }).addTo(map);
 
     // Sample data containing latitude, longitude, and description
-    var campData = {{ camp_data|safe }};
+    var campData = {{ camp_data| safe }};
 
-    campData.forEach(function(camp) {
+    campData.forEach(function (camp) {
         var marker = L.marker([camp.lat, camp.lng]).addTo(map);
         marker.bindPopup(camp.description);
     });
+
+    function showAddServiceForm() {
+        document.getElementById('addServiceForm').style.display = 'block';
+    }
 </script>
 {% endblock %}

@@ -16,4 +16,5 @@ urlpatterns = [
     path('deny/<str:username>/', views.deny_application, name='deny_application'),
     path('<int:pk>/', views.camp_details_view, name='camp_details'),
     path('create/', views.create_camp_view, name='create_camp'),
+    path('add_camp_service/', views.add_camp_service, name='add_camp_service'),
 ]

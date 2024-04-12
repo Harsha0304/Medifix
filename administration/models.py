@@ -70,3 +70,4 @@ class camp_services(models.Model):
 
     def __str__(self):
         return f"{self.camp_name.camp_name} - {self.service_name}"
+

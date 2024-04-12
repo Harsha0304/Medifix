@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import profile, camp_details
+from .models import profile, camp_details, camp_services
 
 
 class SignUpForm(UserCreationForm):
@@ -38,4 +38,10 @@ class ProfileForm(forms.ModelForm):
 class CampDetailsForm(forms.ModelForm):
     class Meta:
         model = camp_details
+        fields = '__all__'
+
+
+class CampServiceDetailsForm(forms.ModelForm):
+    class Meta:
+        model = camp_services
         fields = '__all__'
