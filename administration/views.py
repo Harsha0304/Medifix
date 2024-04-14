@@ -1,23 +1,38 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
-from .forms import SignUpForm, ProfileForm, CampDetailsForm, CampServiceDetailsForm
-from django.core.mail import send_mail
+from .forms import SignUpForm, ProfileForm, CampDetailsForm, DoctorForm, CampServiceForm
 from django.conf import settings
-from .models import profile, camp_details, camp_services
+from django.core.mail import send_mail
+from django.contrib import messages
+from administration.models import profile, camp_details, doctor
 import json
-from django.views.generic import DetailView
 
 # Create your views here.
-def index(request):
-    return render(request,'index.html')
-
 @login_required
 def home(request):
     camps = camp_details.objects.all()
-    camp_data = [{'lat': camp.lattitude, 'lng': camp.longitude, 'description': camp.description} for camp in camps]
+    camp_data = [{'lat': camp.latitude, 'lng': camp.longitude, 'description': camp.description} for camp in camps]
     return render(request, 'home.html', {'camp_data': json.dumps(camp_data)})
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+
+            subject = 'Welcome to Our Website!'
+            message = 'Dear {},\n\nThank you for registering on our website. You are now able to log in.\n\nBest regards,\nThe Website Team'.format(user.username)
+            from_email = settings.EMAIL_HOST_USER
+            to_email = user.email
+            send_mail(subject, message, from_email, [to_email])
+
+
+            messages.success(request, 'Your account has been created ! You are now able to log in')
+            return redirect('login')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/registration.html', {'register_form': form})
 
 @login_required
 def camp_organizer_request(request):
@@ -64,26 +79,6 @@ def deny_application(request, username):
     return redirect('camp_organizer_request')
 
 
-def signup_view(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-
-        if form.is_valid():
-            user = form.save()
-
-            subject = 'Welcome to Our Website!'
-            message = 'Dear {},\n\nThank you for registering on our website. You are now able to log in.\n\nBest regards,\nThe Website Team'.format(user.username)
-            from_email = settings.EMAIL_HOST_USER
-            to_email = user.email
-            send_mail(subject, message, from_email, [to_email])
-
-
-            messages.success(request, 'Your account has been created ! You are now able to log in')
-            return redirect('login')
-    else:
-        form = SignUpForm()
-    return render(request, 'registration/registration.html', {'register_form': form})
-
 @login_required
 def register_camp_org(request):
     user_profile = profile.objects.get(user_name=request.user)
@@ -110,29 +105,12 @@ def register_camp_org(request):
     
     submitted_application = user_profile.submitted_application
     camp_register = user_profile.camp_register
-    return render(request, 'camp_register.html', {'form': form, 'submitted_application': submitted_application, 'camp_register': camp_register})
+    return render(request, 'camp/camp_register.html', {'form': form, 'submitted_application': submitted_application, 'camp_register': camp_register})
 
 @login_required
 def user_camps(request):
     user_camps = camp_details.objects.filter(createdby=request.user)
     return render(request, 'camp/all_camps_user.html', {'user_camps': user_camps})
-
-@login_required
-def camp_details_view(request, pk):
-    camp = get_object_or_404(camp_details, pk=pk)
-    related_services = camp.camp_services_set.all()
-    camp_data = {
-        'lat': camp.lattitude,
-        'lng': camp.longitude,
-        'description': camp.description,
-        'services': list(related_services.values_list('service_name', flat=True))  # Extract service names
-    }
-    return render(request, 'camp/camp_detail.html', {'camp': camp, 'camp_data': json.dumps(camp_data)})
-
-class CampDetailsDetailView(DetailView):
-    model = camp_details
-    template_name = 'camp/camp_detail.html'
-
 
 @login_required
 def create_camp_view(request):
@@ -147,15 +125,58 @@ def create_camp_view(request):
         form = CampDetailsForm()
     return render(request, 'camp/register_camp.html', {'form': form})
 
-
-def add_camp_service(request):
+def create_doctor(request):
     if request.method == 'POST':
-        form = CampServiceDetailsForm(request.POST)
+        form = DoctorForm(request.user, request.POST)
         if form.is_valid():
-            camp = form.save(commit=False)
-            camp.save()
-            return redirect('camp_details', pk=camp.pk)  # Redirect to camp details page
+            doctor = form.save()
+            return redirect('doctor_detail', pk=doctor.pk)  # Redirect to doctor detail page
     else:
-        form = CampServiceDetailsForm()
-    return render(request, 'camp_service/add_camp_service.html', {'form': form})
+        form = DoctorForm(request.user)
+    
+    return render(request, 'camp/add_doctor.html', {'form': form})
 
+def list_doctors_for_user(request):
+    # Get the current logged-in user
+    user = request.user
+
+    # Filter camps created by the user
+    user_camps = camp_details.objects.filter(createdby=user)
+
+    # Get all doctors associated with the user's camps
+    doctors = doctor.objects.filter(camp_name__in=user_camps)
+
+    return render(request, 'camp/doctor_list.html', {'doctors': doctors})
+
+def list_camp_services_for_user(request):
+    # Get the current logged-in user
+    user = request.user
+
+    # Filter camps created by the user
+    user_camps = camp_details.objects.filter(createdby=user)
+
+    # Get all camp services associated with the user's camps
+    camp_services = camp_services.objects.filter(camp_name__in=user_camps)
+
+    return render(request, 'camp/camp_service_list.html', {'camp_services': camp_services})
+
+@login_required
+def create_camp_service(request):
+    if request.method == 'POST':
+        form = CampServiceForm(request.user, request.POST)
+        if form.is_valid():
+            camp_service = form.save()
+            return redirect('camp_service_detail', pk=camp_service.pk)  # Redirect to camp service detail page
+    else:
+        form = CampServiceForm(request.user)
+    
+    return render(request, 'camp/camp_service_form.html', {'form': form})
+
+def camp_details_view(request, camp_id):
+    # Retrieve the camp details object
+    camp = get_object_or_404(camp_details, pk=camp_id)
+
+    context = {
+        'camp': camp
+    }
+    return render(request, 'camp/camp_detail.html', context)

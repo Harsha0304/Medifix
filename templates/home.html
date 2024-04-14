@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block pagetitle %}Medifix - Home{% endblock %}
+{% block pagetitle %}Home{% endblock %}
 {% block content %}
+<h4 class="d-flex">Welcome : <b>{{request.user}}</b></h4>
 <div id="map"></div>
 <script>
     var map = L.map('map').setView([0, 0], 2); // Set the center of the map and the zoom level

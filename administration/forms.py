@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import profile, camp_details, camp_services
+from .models import profile, camp_details, camp_services, doctor
 
 
 class SignUpForm(UserCreationForm):
@@ -40,8 +40,23 @@ class CampDetailsForm(forms.ModelForm):
         model = camp_details
         fields = '__all__'
 
+class DoctorForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(DoctorForm, self).__init__(*args, **kwargs)
+        # Filter camp_name choices based on the logged-in user
+        self.fields['camp_name'].queryset = camp_details.objects.filter(createdby=user)
 
-class CampServiceDetailsForm(forms.ModelForm):
+    class Meta:
+        model = doctor
+        fields = ['camp_name', 'doctor_name', 'doctor_title', 'doctor_description']
+
+class CampServiceForm(forms.ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(CampServiceForm, self).__init__(*args, **kwargs)
+        # Filter camp_name choices based on the logged-in user
+        self.fields['camp_name'].queryset = camp_details.objects.filter(createdby=user)
+
     class Meta:
         model = camp_services
-        fields = '__all__'
+        fields = ['camp_name', 'service_name']
+

@@ -1,54 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block pagetitle %}Medifix - Camp Detail{% endblock %}
+{% block pagetitle %}Medifix - Home{% endblock %}
 {% block content %}
-<h1>{{ camp.camp_name }}</h1>
-<p>Location: {{ camp.location }}</p>
-<p>Start Date Time: {{ camp.start_date_time }}</p>
-<p>End Date Time: {{ camp.end_date_time }}</p>
+    <h2>{{ camp.camp_name }}</h2>
+    <p><strong>Location:</strong> {{ camp.location }}</p>
+    <p><strong>latitude:</strong> {{ camp.latitude }}</p>
+    <p><strong>Longitude:</strong> {{ camp.longitude }}</p>
+    <p>{{ camp.description }}</p>
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([{{ camp.latitude }}, {{ camp.longitude }}], 13);
 
-<h3>Related Services:</h3>
-<ul>
-    {% for service_name in camp_data.services %}
-    <li>{{ service_name }}</li>
-    {% empty %}
-    <li>No services offered</li>
-    {% endfor %}
-</ul>
+        // Add a marker for the camp location
+        L.marker([{{ camp.latitude }}, {{ camp.longitude }}]).addTo(map)
+            .bindPopup("<b>{{ camp.camp_name }}</b><br>{{ camp.description }}").openPopup();
 
-<button onclick="showAddServiceForm()">Add Camp Service</button>
-
-<!-- Add Camp Service Form (hidden by default) -->
-<div id="addServiceForm" style="display: none;">
-    <h3>Add Camp Service</h3>
-    <form id="serviceForm" method="POST" action="{% url 'add_camp_service' %}">
-        {% csrf_token %}
-        <label for="camp_name" hidden>Camp Name:</label>
-        <input type="text" id="camp_name" name="camp_name" value="{{ camp.camp_name }}" required hidden><br><br>
-        <label for="service_name">Service Name:</label>
-        <input type="text" id="service_name" name="service_name" required><br><br>
-        <input type="submit" value="Add">
-    </form>
-</div>
-
-<div id="map"></div>
-<script>
-    var map = L.map('map').setView([0, 0], 2); // Set the center of the map and the zoom level
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    // Sample data containing latitude, longitude, and description
-    var campData = {{ camp_data| safe }};
-
-    campData.forEach(function (camp) {
-        var marker = L.marker([camp.lat, camp.lng]).addTo(map);
-        marker.bindPopup(camp.description);
-    });
-
-    function showAddServiceForm() {
-        document.getElementById('addServiceForm').style.display = 'block';
-    }
-</script>
-{% endblock %}
+        // Add the tile layer for the map (you can use other tile providers)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    </script>
+    <!-- Button to open Google Maps with directions -->
+    <a href="https://www.google.com/maps/dir/?api=1&destination={{ camp.latitude }},{{ camp.longitude }}" target="_blank">Get Directions</a>
+    {% endblock %}

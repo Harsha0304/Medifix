@@ -23,19 +23,10 @@ class profile(models.Model):
     def __str__(self):
         return self.user_name.username
     
-class doctor(models.Model):
-    doctor_id = models.IntegerField()
-    doctor_name = models.CharField(max_length=255, null=True)
-    doctor_title = models.CharField(max_length=255, null=True)
-    doctor_description = models.CharField(max_length=255, null=True)
-
-    def __str__(self):
-        return self.doctor_name
-
 class camp_details(models.Model):
     camp_name = models.CharField(max_length=200,null=True)
     location = models.CharField(max_length=200, null=True)
-    lattitude = models.FloatField()
+    latitude = models.FloatField()
     longitude = models.FloatField()
     start_date_time = models.DateTimeField()
     end_date_time = models.DateTimeField()
@@ -70,4 +61,12 @@ class camp_services(models.Model):
 
     def __str__(self):
         return f"{self.camp_name.camp_name} - {self.service_name}"
+    
+class doctor(models.Model):
+    camp_name = models.ForeignKey(camp_details, on_delete=models.CASCADE)
+    doctor_name = models.CharField(max_length=255, null=True)
+    doctor_title = models.CharField(max_length=255, null=True)
+    doctor_description = models.CharField(max_length=255, null=True)
 
+    def __str__(self):
+        return self.doctor_name

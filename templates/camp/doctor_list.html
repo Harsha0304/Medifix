@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pagetitle %}Medifix - Home{% endblock %}
+{% block content %}
+<h2>List of Doctors</h2>
+<a href="{% url 'create_doctor' %}">Add Doctor</a>
+<ul>
+    {% for doctor in doctors %}
+    <li>{{ doctor.doctor_name }} - {{ doctor.doctor_title }}</li>
+    <!-- Add more fields as needed -->
+    {% empty %}
+    <li>No doctors found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pagetitle %}Medifix - Home{% endblock %}
+{% block content %}
+<h2>List of Camp Services</h2>
+<ul>
+    {% for service in camp_services %}
+    <li>{{ service.camp_name.camp_name }} - {{ service.service_name }}</li>
+    <!-- Add more fields as needed -->
+    {% empty %}
+    <li>No camp services found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
