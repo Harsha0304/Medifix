@@ -4,3 +4,4 @@ from administration import models
 admin.site.register(models.profile)
 admin.site.register(models.doctor)
 admin.site.register(models.camp_details)
+admin.site.register(models.camp_services)

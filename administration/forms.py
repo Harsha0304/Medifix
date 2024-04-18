@@ -36,6 +36,13 @@ class ProfileForm(forms.ModelForm):
         }
 
 class CampDetailsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CampDetailsForm, self).__init__(*args, **kwargs)
+        
+        # Iterate through all fields
+        for field_name, field in self.fields.items():
+            # Add 'form-control' class to each field
+            field.widget.attrs['class'] = 'form-control'
     class Meta:
         model = camp_details
         fields = '__all__'
@@ -46,6 +53,10 @@ class DoctorForm(forms.ModelForm):
         # Filter camp_name choices based on the logged-in user
         self.fields['camp_name'].queryset = camp_details.objects.filter(createdby=user)
 
+        for field_name, field in self.fields.items():
+            # Add 'form-control' class to each field
+            field.widget.attrs['class'] = 'form-control'
+
     class Meta:
         model = doctor
         fields = ['camp_name', 'doctor_name', 'doctor_title', 'doctor_description']
@@ -53,8 +64,10 @@ class DoctorForm(forms.ModelForm):
 class CampServiceForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(CampServiceForm, self).__init__(*args, **kwargs)
-        # Filter camp_name choices based on the logged-in user
-        self.fields['camp_name'].queryset = camp_details.objects.filter(createdby=user)
+
+        for field_name, field in self.fields.items():
+            # Add 'form-control' class to each field
+            field.widget.attrs['class'] = 'form-control'
 
     class Meta:
         model = camp_services

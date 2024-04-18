@@ -7,6 +7,22 @@
     <p><strong>latitude:</strong> {{ camp.latitude }}</p>
     <p><strong>Longitude:</strong> {{ camp.longitude }}</p>
     <p>{{ camp.description }}</p>
+    <h2>Doctors:</h2>
+    <ul>
+        {% for doctor in doctors %}
+        <li>{{ doctor.doctor_name }} - {{ doctor.doctor_title }}</li>
+        {% empty %}
+        <li>No doctors found for this camp.</li>
+        {% endfor %}
+    </ul>
+    <h2>Camp Services:</h2>
+    <ul>
+        {% for camp_ser in camp_ser %}
+        <li>{{ camp_ser.service_name }}</li>
+        {% empty %}
+        <li>No Camp Services found for this camp.</li>
+        {% endfor %}
+    </ul>
     <div id="map"></div>
     <script>
         var map = L.map('map').setView([{{ camp.latitude }}, {{ camp.longitude }}], 13);
@@ -21,5 +37,5 @@
         }).addTo(map);
     </script>
     <!-- Button to open Google Maps with directions -->
-    <a href="https://www.google.com/maps/dir/?api=1&destination={{ camp.latitude }},{{ camp.longitude }}" target="_blank">Get Directions</a>
-    {% endblock %}
+    <a href="https://www.google.com/maps/dir/?api=1&destination={{ camp.latitude }},{{ camp.longitude }}" target="_blank" class="btn btn-primary btn-lg">Get Directions</a>
+{% endblock %}

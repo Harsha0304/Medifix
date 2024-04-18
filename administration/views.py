@@ -4,7 +4,7 @@ from .forms import SignUpForm, ProfileForm, CampDetailsForm, DoctorForm, CampSer
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib import messages
-from administration.models import profile, camp_details, doctor
+from administration.models import profile, camp_details, doctor, camp_services
 import json
 
 # Create your views here.
@@ -130,7 +130,7 @@ def create_doctor(request):
         form = DoctorForm(request.user, request.POST)
         if form.is_valid():
             doctor = form.save()
-            return redirect('doctor_detail', pk=doctor.pk)  # Redirect to doctor detail page
+            return redirect('list_user_doctors')  # Redirect to doctor detail page
     else:
         form = DoctorForm(request.user)
     
@@ -156,9 +156,9 @@ def list_camp_services_for_user(request):
     user_camps = camp_details.objects.filter(createdby=user)
 
     # Get all camp services associated with the user's camps
-    camp_services = camp_services.objects.filter(camp_name__in=user_camps)
+    camp_service = camp_services.objects.filter(camp_name__in=user_camps)
 
-    return render(request, 'camp/camp_service_list.html', {'camp_services': camp_services})
+    return render(request, 'camp/camp_service_list.html', {'camp_services': camp_service})
 
 @login_required
 def create_camp_service(request):
@@ -166,7 +166,7 @@ def create_camp_service(request):
         form = CampServiceForm(request.user, request.POST)
         if form.is_valid():
             camp_service = form.save()
-            return redirect('camp_service_detail', pk=camp_service.pk)  # Redirect to camp service detail page
+            return redirect('list_user_camp_services')  # Redirect to camp service detail page
     else:
         form = CampServiceForm(request.user)
     
@@ -175,8 +175,12 @@ def create_camp_service(request):
 def camp_details_view(request, camp_id):
     # Retrieve the camp details object
     camp = get_object_or_404(camp_details, pk=camp_id)
+    doctors = doctor.objects.filter(camp_name=camp)
+    camp_service = camp_services.objects.filter(camp_name = camp)
 
     context = {
-        'camp': camp
+        'camp': camp,
+        'doctors': doctors,
+        'camp_ser': camp_service,
     }
     return render(request, 'camp/camp_detail.html', context)

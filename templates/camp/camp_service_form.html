@@ -3,10 +3,9 @@
 {% block pagetitle %}Medifix - Home{% endblock %}
 {% block content %}
 <h2>Create Camp Service</h2>
-<a href="{% url 'create_camp_service' %}">Camp Services</a>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
+    <button type="submit" class="btn btn-success">Submit</button>
 </form>
 {% endblock %}
