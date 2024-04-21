@@ -2,6 +2,10 @@
 {% block pagetitle %}Home{% endblock %}
 {% block content %}
 <h4 class="d-flex">Welcome : <b>{{request.user}}</b></h4>
+<p>totals camp, active camp, inactive camp display already backend done. Ui alone need to do</p>
+<p>Create camp se form thak change kiya, start date, end date UI field type change and created by field request.user se default</p>
+<p>if start date and end date is not given the registration should not be allowed. If all the fields are filled then only registration should be allowed. Email should come</p>
+<p>If the end date is over then the registration should be not allowed.</p>
 <div id="map"></div>
 <script>
     var map = L.map('map').setView([0, 0], 2); // Set the center of the map and the zoom level

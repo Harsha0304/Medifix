@@ -6,13 +6,18 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from administration.models import profile, camp_details, doctor, camp_services
 import json
+from django.contrib.auth.models import User
 
 # Create your views here.
 @login_required
 def home(request):
     camps = camp_details.objects.all()
+    camp_total = camp_details.objects.all().count()
+    total_users = User.objects.all().count()
+    camp_active = camp_details.objects.filter(camp_register_active=True).count()
+    camp_inactive = camp_details.objects.filter(camp_register_active=False).count()
     camp_data = [{'lat': camp.latitude, 'lng': camp.longitude, 'description': camp.description} for camp in camps]
-    return render(request, 'home.html', {'camp_data': json.dumps(camp_data)})
+    return render(request, 'home.html', {'camp_data': json.dumps(camp_data),'camp_total':camp_total,'total_users':total_users,'camp_active':camp_active,'camp_inactive':camp_inactive})
 
 def signup_view(request):
     if request.method == 'POST':
@@ -109,7 +114,13 @@ def register_camp_org(request):
 
 @login_required
 def user_camps(request):
-    user_camps = camp_details.objects.filter(createdby=request.user)
+    if request.user.is_superuser:
+        # User is a super admin, retrieve all camp details
+        user_camps = camp_details.objects.all()
+    else:
+        # User is not a super admin, retrieve camps created by this user
+        user_camps = camp_details.objects.filter(createdby=request.user)
+    
     return render(request, 'camp/all_camps_user.html', {'user_camps': user_camps})
 
 @login_required
@@ -182,5 +193,11 @@ def camp_details_view(request, camp_id):
         'camp': camp,
         'doctors': doctors,
         'camp_ser': camp_service,
+        'user': request.user
     }
     return render(request, 'camp/camp_detail.html', context)
+
+def camp_delete(request, pk):
+    camp = get_object_or_404(camp_details, pk=pk)
+    camp.delete()
+    return redirect('my_camps')

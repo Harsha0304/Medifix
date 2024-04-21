@@ -33,9 +33,11 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
                     </li>
+                    {% if request.user.profile.camp_register == False %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'camp_register' %}">Register as Camp Organizer</a>
                     </li>
+                    {% endif %}
                     {% if user.is_superuser %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -62,7 +64,10 @@
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="nav-link">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </div>

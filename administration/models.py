@@ -28,8 +28,8 @@ class camp_details(models.Model):
     location = models.CharField(max_length=200, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    start_date_time = models.DateTimeField()
-    end_date_time = models.DateTimeField()
+    start_date_time = models.DateTimeField(blank=True)
+    end_date_time = models.DateTimeField(blank=True)
     contact_website = models.URLField(max_length=200, null=True, blank=True)
     hospital_name = models.CharField(max_length=150,null=True, blank=True)
     club_name = models.CharField(max_length=150,null=True, blank=True)
@@ -39,6 +39,7 @@ class camp_details(models.Model):
     cost = models.IntegerField(null=True, blank=True, default='0')
     total_camp_registrations = models.IntegerField()
     camp_register_active = models.BooleanField(default=False)
+    registration = models.BooleanField(default=False)
     createdby = models.ForeignKey(User, on_delete=models.DO_NOTHING)
 
 

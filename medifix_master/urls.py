@@ -19,4 +19,5 @@ urlpatterns = [
     path('camp_services/', views.list_camp_services_for_user, name='list_user_camp_services'),
     path('create_camp_service/', views.create_camp_service, name='create_camp_service'),
     path('camp/<int:camp_id>/', views.camp_details_view, name='camp_details'),
+    path('camp/<int:pk>/delete/', views.camp_delete, name='camp_delete'),
 ]
