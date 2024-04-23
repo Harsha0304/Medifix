@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import profile, camp_details, camp_services, doctor
+from .models import profile, camp_details, camp_services, doctor, appointment
 
 
 class SignUpForm(UserCreationForm):
@@ -83,4 +83,12 @@ class CampServiceForm(forms.ModelForm):
     class Meta:
         model = camp_services
         fields = ['camp_name', 'service_name']
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = appointment
+        fields = ['appointment_date']
+        widgets = {
+            'appointment_date': forms.DateInput(attrs={'type': 'date','class': 'form-control','aria-describedby':'appointment_date'})  # Use HTML5 date input
+        }
 

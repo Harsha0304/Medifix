@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import SignUpForm, ProfileForm, CampDetailsForm, DoctorForm, CampServiceForm
+from .forms import SignUpForm, ProfileForm, CampDetailsForm, DoctorForm, CampServiceForm, AppointmentForm
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib import messages
-from administration.models import profile, camp_details, doctor, camp_services
+from administration.models import profile, camp_details, doctor, camp_services, appointment
 import json
 from django.contrib.auth.models import User
 
@@ -136,6 +136,7 @@ def create_camp_view(request):
         form = CampDetailsForm()
     return render(request, 'camp/register_camp.html', {'form': form})
 
+@login_required
 def create_doctor(request):
     if request.method == 'POST':
         form = DoctorForm(request.user, request.POST)
@@ -147,6 +148,7 @@ def create_doctor(request):
     
     return render(request, 'camp/add_doctor.html', {'form': form})
 
+@login_required
 def list_doctors_for_user(request):
     # Get the current logged-in user
     user = request.user
@@ -159,6 +161,7 @@ def list_doctors_for_user(request):
 
     return render(request, 'camp/doctor_list.html', {'doctors': doctors})
 
+@login_required
 def list_camp_services_for_user(request):
     # Get the current logged-in user
     user = request.user
@@ -183,6 +186,7 @@ def create_camp_service(request):
     
     return render(request, 'camp/camp_service_form.html', {'form': form})
 
+@login_required
 def camp_details_view(request, camp_id):
     # Retrieve the camp details object
     camp = get_object_or_404(camp_details, pk=camp_id)
@@ -193,11 +197,54 @@ def camp_details_view(request, camp_id):
         'camp': camp,
         'doctors': doctors,
         'camp_ser': camp_service,
-        'user': request.user
     }
     return render(request, 'camp/camp_detail.html', context)
 
+@login_required
 def camp_delete(request, pk):
     camp = get_object_or_404(camp_details, pk=pk)
     camp.delete()
     return redirect('my_camps')
+
+@login_required
+def all_camps(request):
+    camps = camp_details.objects.filter(camp_register_active=True)
+    user = request.user
+    user_appointments = appointment.objects.filter(user_name=user)
+    camp_appointments = {appointment.camp_name_id: appointment for appointment in user_appointments}
+
+    context = {
+        'camps': camps,
+        'user_appointments': camp_appointments
+    }
+    return render(request, 'camp/all_camps.html', context)
+
+@login_required
+def register_appointment(request, camp_id):
+    camp = get_object_or_404(camp_details, pk=camp_id)
+    
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment_obj = form.save(commit=False)
+            appointment_obj.user_name = request.user
+            appointment_obj.camp_name = camp
+            appointment_obj.save()
+            send_registration_email(appointment_obj)
+            return redirect('home')  # Redirect after successful registration
+        
+    else:
+        form = AppointmentForm()
+
+    return render(request, 'camp/register_appointment.html', {'camp': camp, 'form': form})
+
+def send_registration_email(appointment_obj):
+    subject = 'Congratulations! You have registered for a camp'
+    message = f'Hello {appointment_obj.user_name.username},\n\n'
+    message += f'You have successfully registered for the camp "{appointment_obj.camp_name.camp_name}" '
+    message += f'on {appointment_obj.appointment_date}.\n'
+    message += f'Your Appointment id is: {appointment_obj.appointment_number}.\n'
+    message += 'Enjoy your time at the camp!\n\n'
+    message += 'Best regards,\nThe Camp Team'
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, [appointment_obj.user_name.email])

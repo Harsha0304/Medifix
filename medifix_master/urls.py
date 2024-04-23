@@ -20,4 +20,6 @@ urlpatterns = [
     path('create_camp_service/', views.create_camp_service, name='create_camp_service'),
     path('camp/<int:camp_id>/', views.camp_details_view, name='camp_details'),
     path('camp/<int:pk>/delete/', views.camp_delete, name='camp_delete'),
+    path('all_camps/', views.all_camps, name='all_camps'),
+    path('register_appointment/<int:camp_id>/', views.register_appointment, name='register_appointment'),
 ]

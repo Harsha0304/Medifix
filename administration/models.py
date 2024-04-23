@@ -77,3 +77,12 @@ class doctor(models.Model):
 
     def __str__(self):
         return self.doctor_name
+    
+class appointment(models.Model):
+    appointment_number = models.AutoField(primary_key=True, unique=True)
+    user_name = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+    camp_name = models.ForeignKey(camp_details, on_delete=models.DO_NOTHING, null=True)
+    appointment_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.user_name.username} - {self.camp_name.camp_name}"
