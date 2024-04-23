@@ -37,15 +37,26 @@ class ProfileForm(forms.ModelForm):
 
 class CampDetailsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
         super(CampDetailsForm, self).__init__(*args, **kwargs)
         
         # Iterate through all fields
         for field_name, field in self.fields.items():
-            # Add 'form-control' class to each field
+            # Add 'form-control' class to each field widget
             field.widget.attrs['class'] = 'form-control'
+
+        boolean_fields = ['camp_register_active', 'registration']
+        for field_name in boolean_fields:
+            self.fields[field_name].widget = forms.CheckboxInput(attrs={'class': 'form-check-input'})
+        
+        # Set custom widget for start_date_time field
+        self.fields['start_date_time'].widget = forms.DateTimeInput(attrs={'class': 'form-control','type': 'datetime-local'})
+        self.fields['end_date_time'].widget = forms.DateTimeInput(attrs={'class': 'form-control','type': 'datetime-local'})
+        
     class Meta:
         model = camp_details
-        fields = '__all__'
+        fields = ('camp_name', 'location', 'latitude', 'longitude', 'start_date_time', 'end_date_time', 'contact_website', 'hospital_name', 'club_name', 'other', 'description', 'type_of_camp', 'total_camp_registrations', 'cost', 'camp_register_active', 'registration')
+        exclude = ['createdby']
 
 class DoctorForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):

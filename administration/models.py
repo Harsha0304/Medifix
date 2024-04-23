@@ -28,8 +28,8 @@ class camp_details(models.Model):
     location = models.CharField(max_length=200, null=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    start_date_time = models.DateTimeField(blank=True)
-    end_date_time = models.DateTimeField(blank=True)
+    start_date_time = models.DateTimeField(blank=True, null=True)
+    end_date_time = models.DateTimeField(blank=True, null=True)
     contact_website = models.URLField(max_length=200, null=True, blank=True)
     hospital_name = models.CharField(max_length=150,null=True, blank=True)
     club_name = models.CharField(max_length=150,null=True, blank=True)
@@ -40,7 +40,7 @@ class camp_details(models.Model):
     total_camp_registrations = models.IntegerField()
     camp_register_active = models.BooleanField(default=False)
     registration = models.BooleanField(default=False)
-    createdby = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    createdby = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
 
 
     def __str__(self):
@@ -55,6 +55,12 @@ class camp_details(models.Model):
             raise ValidationError("Cost field is mandatory for paid camps.")
         elif self.type_of_camp == "Free" and self.cost is not None:
             raise ValidationError("Cost field should not be filled for free camps.")
+        
+        if self.registration and (not self.start_date_time or not self.end_date_time):
+            raise ValidationError("Start Date Time and End Date Time must be provided for registered camps.")
+        
+        if self.camp_register_active and (not self.start_date_time or not self.end_date_time):
+            raise ValidationError("Start Date Time and End Date Time must be provided for registered camps.")
         
 class camp_services(models.Model):
     camp_name = models.ForeignKey(camp_details, on_delete=models.CASCADE)

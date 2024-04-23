@@ -131,7 +131,7 @@ def create_camp_view(request):
             camp = form.save(commit=False)
             camp.createdby = request.user
             camp.save()
-            return redirect('camp_details', pk=camp.pk)  # Redirect to camp details page
+            return redirect('my_camps')  # Redirect to camp details page
     else:
         form = CampDetailsForm()
     return render(request, 'camp/register_camp.html', {'form': form})
