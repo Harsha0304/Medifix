@@ -7,6 +7,9 @@
     <p><strong>latitude:</strong> {{ camp.latitude }}</p>
     <p><strong>Longitude:</strong> {{ camp.longitude }}</p>
     <p>{{ camp.description }}</p>
+    {% if user.is_superuser %}
+    <p>{{ camp.createdby }}</p>
+    {% endif %}
     <h2>Doctors:</h2>
     <ul>
         {% for doctor in doctors %}

@@ -215,7 +215,8 @@ def all_camps(request):
 
     context = {
         'camps': camps,
-        'user_appointments': camp_appointments
+        'user_appointments': camp_appointments,
+        'user': request.user,
     }
     return render(request, 'camp/all_camps.html', context)
 
@@ -248,3 +249,9 @@ def send_registration_email(appointment_obj):
     message += 'Best regards,\nThe Camp Team'
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, [appointment_obj.user_name.email])
+
+def view_campregistration_details(request, camp_id, user):
+    camp_detail = get_object_or_404(camp_details, pk=camp_id)
+    user_detail = get_object_or_404(User, pk=user)
+    appointments = get_object_or_404(appointment, camp_name = camp_detail, user_name=user_detail)
+    return render(request,'camp/view_registration_details.html', {'camp_detail':camp_detail, 'user_detail':user_detail, 'appointments':appointments})

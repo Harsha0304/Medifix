@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+import uuid
 
 type_of_camp = (
     ("Paid","Paid"),
@@ -79,7 +80,7 @@ class doctor(models.Model):
         return self.doctor_name
     
 class appointment(models.Model):
-    appointment_number = models.AutoField(primary_key=True, unique=True)
+    appointment_number = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_name = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
     camp_name = models.ForeignKey(camp_details, on_delete=models.DO_NOTHING, null=True)
     appointment_date = models.DateField()

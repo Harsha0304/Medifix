@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block pagetitle %}Medifix - Camp Registration Details{% endblock %}
+{% block content %}
+<h2>Camp Registration Details</h2>
+{{camp_detail.camp_name}}
+{{appointments.appointment_number}}
+{{user_detail.profile.phone_number}}
+{{user_detail.username}}
+{% endblock %}

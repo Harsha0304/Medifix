@@ -27,11 +27,10 @@
             <td>
                 <a href="{% url 'camp_details' camp.id %}" class="btn btn-primary">view</a>
                 {% if camp.id in user_appointments %}
-                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="{% url 'view_campregistration_details' camp.id user.id %}" class="btn btn-primary">View Details</a>
                 {% else %}
                     <a href="{% url 'register_appointment' camp.id %}" class="btn btn-success">Register</a>
                 {% endif %}
-                <!-- <a href="{% url 'register_appointment' camp.id %}" class="btn btn-success">Register</a> -->
             </td>
         </tr>
         {% empty %}
