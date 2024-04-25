@@ -7,6 +7,7 @@ from django.contrib import messages
 from administration.models import profile, camp_details, doctor, camp_services, appointment
 import json
 from django.contrib.auth.models import User
+from django.db.models import Max
 
 # Create your views here.
 @login_required
@@ -230,6 +231,8 @@ def register_appointment(request, camp_id):
             appointment_obj = form.save(commit=False)
             appointment_obj.user_name = request.user
             appointment_obj.camp_name = camp
+            max_token = appointment.objects.filter(camp_name=camp).aggregate(Max('token_no'))['token_no__max'] or 0
+            appointment_obj.token_no = max_token + 1
             appointment_obj.save()
             send_registration_email(appointment_obj)
             return redirect('home')  # Redirect after successful registration

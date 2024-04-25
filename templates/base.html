@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
 
 <head>
@@ -22,7 +22,11 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a href="{% url 'home' %}" class="navbar-brand">Medifix</a>
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'medifix_logo.jpeg' %}" alt="Logo" width="35" height="30"
+                    class="d-inline-block align-text-top">
+                Medifix
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -48,7 +52,8 @@
                             Administration
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'camp_organizer_request' %}">Pending Camp Organizer registration Request</a></li>
+                            <li><a class="dropdown-item" href="{% url 'camp_organizer_request' %}">Pending Camp
+                                    Organizer registration Request</a></li>
                             <li><a class="dropdown-item" href="{% url 'admin:index' %}" target="_blank">Admin</a></li>
                         </ul>
                     </li>
@@ -62,7 +67,8 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'my_camps' %}">All Camps</a></li>
                             <li><a class="dropdown-item" href="{% url 'list_user_doctors' %}">Doctors List</a></li>
-                            <li><a class="dropdown-item" href="{% url 'list_user_camp_services' %}">All Camp Services</a></li>
+                            <li><a class="dropdown-item" href="{% url 'list_user_camp_services' %}">All Camp
+                                    Services</a></li>
                         </ul>
                     </li>
                     {% endif %}
