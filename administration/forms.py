@@ -29,7 +29,7 @@ class ProfileForm(forms.ModelForm):
         fields = ['phone_number', 'date_of_birth', 'camp_register', 'submitted_application','about']
         widgets = {
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'date_of_birth': forms.DateInput(attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control','type': 'date'}),
             'camp_register': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'submitted_application': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'about': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'aria-describedby': 'abouthelp'}),
