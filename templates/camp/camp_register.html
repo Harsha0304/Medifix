@@ -3,21 +3,27 @@
 {% block pagetitle %}Medifix - Camp Register{% endblock %}
 {% block content %}
 {% if submitted_application %}
-    {% if camp_register %}
-    <div class="card bg-success text-white">
-        <div class="card-body">
-            The Application has been approved.
-        </div>
+{% if camp_register %}
+<div class="card bg-success text-white">
+    <div class="card-body">
+        The Application has been approved.
     </div>
-    {% else %}
-    <div class="card bg-primary text-white">
+</div>
+{% else %}
+<div class="card bg-primary text-white">
     <div class="card-body">
         The Application has been submitted and awating for approval.
     </div>
 </div>
-    {% endif %}
+{% endif %}
 
 {% else %}
+{% if form.errors %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <p>Invalid Credentials. Retry again.</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
 <form method="POST">
     {% csrf_token %}
     <legend>Register as a Camp Organizer</legend>

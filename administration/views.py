@@ -228,14 +228,24 @@ def register_appointment(request, camp_id):
     if request.method == 'POST':
         form = AppointmentForm(request.POST)
         if form.is_valid():
-            appointment_obj = form.save(commit=False)
-            appointment_obj.user_name = request.user
-            appointment_obj.camp_name = camp
-            max_token = appointment.objects.filter(camp_name=camp).aggregate(Max('token_no'))['token_no__max'] or 0
-            appointment_obj.token_no = max_token + 1
-            appointment_obj.save()
-            send_registration_email(appointment_obj)
-            return redirect('home')  # Redirect after successful registration
+            appointment_date = form.cleaned_data['appointment_date']
+
+            # Validate appointment date against camp start and end dates
+            if camp.start_date_time.date() and appointment_date < camp.start_date_time.date():
+                messages.error(request, 'Appointment date cannot be before the start date of the camp.')
+            elif camp.end_date_time.date() and appointment_date > camp.end_date_time.date():
+                messages.error(request, 'Appointment date cannot be after the end date of the camp.')
+            else:
+                # Create appointment if date is valid
+                appointment_obj = form.save(commit=False)
+                appointment_obj.user_name = request.user
+                appointment_obj.camp_name = camp
+                max_token = appointment.objects.filter(camp_name=camp).aggregate(Max('token_no'))['token_no__max'] or 0
+                appointment_obj.token_no = max_token + 1
+                appointment_obj.save()
+                # Send registration email or perform other actions
+                messages.success(request, 'Appointment registered successfully.')
+                return redirect('home')
         
     else:
         form = AppointmentForm()

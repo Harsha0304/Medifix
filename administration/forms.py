@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import profile, camp_details, camp_services, doctor, appointment
+from django.core.exceptions import ValidationError
 
 
 class SignUpForm(UserCreationForm):
@@ -89,6 +90,6 @@ class AppointmentForm(forms.ModelForm):
         model = appointment
         fields = ['appointment_date']
         widgets = {
-            'appointment_date': forms.DateInput(attrs={'type': 'date','class': 'form-control','aria-describedby':'appointment_date'})  # Use HTML5 date input
+            'appointment_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
         }
 
