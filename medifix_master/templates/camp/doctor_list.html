@@ -3,10 +3,12 @@
 {% block pagetitle %}Medifix - Doctors{% endblock %}
 {% block content %}
 <h2>List of Doctors</h2>
-<div class="pt-3"></div>
-<a href="{% url 'create_doctor' %}" class="btn btn-primary">Add Doctor</a>
-<div class="pb-3"></div>
-<table class="table table-hover table-primary table-striped">
+<div class="card">
+    <div class="card-body">
+        Your Doctors list <span><a href="{% url 'create_doctor' %}">Add Doctor</a></span>
+    </div>
+</div>
+<table class="table">
     <thead>
         <tr>
             <th>Doctor Name</th>

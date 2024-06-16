@@ -3,10 +3,12 @@
 {% block pagetitle %}Medifix - Camp Services{% endblock %}
 {% block content %}
 <h2>List of Camp Services</h2>
-<div class="pt-3"></div>
-<a class="btn btn-primary" href="{% url 'create_camp_service' %}">Add Camp Service</a>
-<div class="pb-3"></div>
-<table class="table table-hover table-primary table-striped">
+<div class="card">
+    <div class="card-body">
+        Your Camp Services <span><a href="{% url 'create_camp_service' %}">Add Camp Service</a></span>
+    </div>
+</div>
+<table class="table">
     <thead>
         <tr>
             <th>Camp Name</th>

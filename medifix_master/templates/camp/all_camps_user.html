@@ -2,11 +2,12 @@
 {% load static %}
 {% block pagetitle %}Medifix - Home{% endblock %}
 {% block content %}
-<div class="pt-3"></div>
-<h3>Your Camps</h3>
-<a href="{% url 'create_camp' %}" class="btn btn-primary">Add Camp</a>
-<div class="pb-3"></div>
-<table class="table table-hover table-primary table-striped">
+<div class="card">
+    <div class="card-body">
+        Your Camps <span><a href="{% url 'create_camp' %}">Add Camp</a></span>
+    </div>
+</div>
+<table class="table">
     <thead>
         <tr>
             <th>Camp Name</th>

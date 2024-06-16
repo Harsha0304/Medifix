@@ -2,11 +2,12 @@
 {% load static %}
 {% block pagetitle %}Medifix - Home{% endblock %}
 {% block content %}
-<div class="pt-3"></div>
-<h3>Your Camps</h3>
-<a href="{% url 'create_camp' %}" class="btn btn-primary">Add Camp</a>
-<div class="pb-3"></div>
-<table class="table table-hover table-primary table-striped">
+<div class="card">
+    <div class="card-body">
+        Register Camps
+    </div>
+</div>
+<table class="table">
     <thead>
         <tr>
             <th>Camp Name</th>
@@ -17,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for camp in user_camps %}
+        {% for camp in camps %}
         <tr>
             <td>{{ camp.camp_name }}</td>
             <td>{{ camp.location }}</td>
@@ -25,6 +26,11 @@
             <td>{{ camp.end_date_time }}</td>
             <td>
                 <a href="{% url 'camp_details' camp.id %}" class="btn btn-primary">view</a>
+                {% if camp.id in user_appointments %}
+                    <a href="{% url 'view_campregistration_details' camp.id user.id %}" class="btn btn-primary">View Details</a>
+                {% else %}
+                    <a href="{% url 'register_appointment' camp.id %}" class="btn btn-success">Register</a>
+                {% endif %}
             </td>
         </tr>
         {% empty %}
